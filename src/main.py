@@ -57,7 +57,7 @@ def build_argparser():
                         help='(optional) Specify mouse pointer movement precision (Default is "high")'\
                              '\nchoices: [%(choices)s]')
 
-    parse.add_argument('-fm','--face_model', default='intel/face-detection-adas-0001/FP16/face-detection-adas-0001',
+    parse.add_argument('-fm','--face_model', default='models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001',
                         type=str, metavar='MODEL_PATH', required=False, 
                         help='(optional) Path to model xml file (enter the file name without .xml extension)'\
                                 'Precisions available: [FP32, FP16, INT8]')
@@ -69,7 +69,7 @@ def build_argparser():
     parse.add_argument('-fpt', '--face_prob_threshold', default=0.5, type=float, metavar='PROB_THRESHOLD', 
                         required=False, help='(optional) Probability threshold for Face detection model. (Default is 0.5)')
 
-    parse.add_argument('-flm','--face_landmark_model', default='intel/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009', 
+    parse.add_argument('-flm','--face_landmark_model', default='models/intel/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009', 
                         type=str, metavar='MODEL_PATH', required=False, 
                         help='(optional) Path to model xml file (enter the file name without .xml extension)'\
                              'Precisions available: [FP32, FP16, INT8]')
@@ -81,7 +81,7 @@ def build_argparser():
     parse.add_argument('-flpt', '--face_landmark_prob_threshold', default=0.5, type=float, metavar='PROB_THRESHOLD', 
                         required=False, help='(optional) Probability threshold for the Facial landmark detection model. (Default is 0.5)')
 
-    parse.add_argument('-hpm','--head_pose_model', default='intel/head-pose-estimation-adas-0001/FP16/head-pose-estimation-adas-0001',
+    parse.add_argument('-hpm','--head_pose_model', default='models/intel/head-pose-estimation-adas-0001/FP16/head-pose-estimation-adas-0001',
                         type=str, metavar='MODEL_PATH', required=False, 
                         help='(optional) Path to model xml file (enter the file name without .xml extension)'\
                              'Precisions available: [FP32, FP16, INT8]')
@@ -93,7 +93,7 @@ def build_argparser():
     parse.add_argument('-hppt', '--head_pose_prob_threshold', default=0.5, type=float, metavar='PROB_THRESHOLD', 
                         required=False, help='(optional) Probability threshold for Head Pose detection model. (Default is 0.5)\n')
 
-    parse.add_argument('-gm', '--gaze_model', default='intel/gaze-estimation-adas-0002/FP16/gaze-estimation-adas-0002',
+    parse.add_argument('-gm', '--gaze_model', default='models/intel/gaze-estimation-adas-0002/FP16/gaze-estimation-adas-0002',
                         type=str, metavar='MODEL_PATH', required=False, 
                         help='(optional) Path to model xml file (enter the file name without .xml extension)'\
                              'Precisions available: [FP32, FP16, INT8]')

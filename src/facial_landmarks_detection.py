@@ -38,8 +38,10 @@ class FacialLandmarksDetection:
         except Exception as e:
             raise ValueError('[Facial Landmark Detection Module] Could not initialize the network. Ensure that model path is correct')
 
-        self.input_name=next(iter(self.model.inputs))
-        self.input_shape=self.model.inputs[self.input_name].shape 
+        # self.input_name=next(iter(self.model.inputs))
+        self.input_name=next(iter(self.model.input_info))
+        # self.input_shape=self.model.inputs[self.input_name].shape
+        self.input_shape = self.model.input_info[self.input_name].input_data.shape
         self.output_name=next(iter(self.model.outputs))
         self.output_shape=self.model.outputs[self.output_name].shape
 
@@ -104,7 +106,13 @@ class FacialLandmarksDetection:
         '''
 
         supported_layers = self._ie_core.query_network(self.model, self.device)
-        unsupported_layers = [layer for layer in self.model.layers.keys() if layer not in supported_layers]
+        # print(supported_layers)
+        # unsupported_layers = [layer for layer in self.model.layers.keys() if layer not in supported_layers]
+        unsupported_input_layers = [layer for layer in self.model.input_info.keys() if layer not in supported_layers]
+        # print(unsupported_input_layers)
+        unsupported_output_layers = [layer for layer in self.model.outputs.keys() if layer not in supported_layers]
+        # print(unsupported_output_layers)
+        unsupported_layers = unsupported_input_layers + unsupported_output_layers
 
         if (len(unsupported_layers) != 0) and (self.extension and self.device is not None):
             self.core.add_extension(self.extension, self.device)
