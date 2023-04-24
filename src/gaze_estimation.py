@@ -88,13 +88,19 @@ class GazeEstimation:
         self.right_eye_name='right_eye_image'
         self.right_eye_image = self.preprocess_input(right_eye_image)        
 
-        self.inference_handler=self.infer.start_async(request_id=0, inputs={self.left_eye_name: self.left_eye_image, 
+        self.infer_request = self.infer.start_async(request_id=0, inputs={self.left_eye_name: self.left_eye_image, 
                                                      self.right_eye_name: self.right_eye_image,
                                                      self.head_pose_names: self.head_pose_angles})
 
-        if self.infer.requests[0].wait(-1)==0:
-            gaze_vector = self.inference_handler.outputs
-            gaze_x, gaze_y = self.preprocess_output(gaze_vector)
+        # if self.infer.requests[0].wait(-1)==0:
+        #     gaze_vector = self.inference_handler.outputs
+        #     gaze_x, gaze_y = self.preprocess_output(gaze_vector)
+
+        if self.infer_request.wait() == 0:
+            # print(self.infer_request.output_blobs)
+            get_output = self.infer_request.output_blobs
+            gaze_x, gaze_y = self.preprocess_output(get_output)
+
 
         return gaze_x, gaze_y
 
@@ -112,12 +118,12 @@ class GazeEstimation:
         '''
 
         supported_layers=self._ie_core.query_network(self.model, self.device)
-        print(supported_layers)
+        # print(supported_layers)
         # unsupported_layers=[layer for layer in self.model.layers.keys() if layer not in supported_layers]
         unsupported_input_layers=[layer for layer in self.model.input_info.keys() if layer not in supported_layers]
-        print(unsupported_input_layers)
+        # print(unsupported_input_layers)
         unsupported_output_layers=[layer for layer in self.model.outputs.keys() if layer not in supported_layers]
-        print(unsupported_output_layers)
+        # print(unsupported_output_layers)
         unsupported_layers = unsupported_input_layers + unsupported_output_layers
 
         if (len(unsupported_layers) != 0) and (self.extension and self.device is not None):
@@ -170,8 +176,8 @@ class GazeEstimation:
         gaze_y = y coordinate of the gaze
         '''
         
-        gaze_x = gaze_vector.get('gaze_vector')[0][0]
-        gaze_y = gaze_vector.get('gaze_vector')[0][1]
+        gaze_x = np.array(gaze_vector.get('gaze_vector').buffer)[0][0]
+        gaze_y = np.array(gaze_vector.get('gaze_vector').buffer)[0][1]
         log.info('[ Gaze Estimator ] Acquired gaze vector coordinates')
-        
+        log.info('[ Gaze Estimator ] X: {0} Y: {1}'.format(gaze_x, gaze_y))
         return gaze_x, gaze_y

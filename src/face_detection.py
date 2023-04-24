@@ -84,10 +84,15 @@ class FaceDetection:
         self.image_height = image.shape[0]
 
         self.input_image = self.preprocess_input(image)
-        self.infer.start_async(request_id=0, inputs={self.input_name: self.input_image})
+        # self.infer.start_async(request_id=0, inputs={self.input_name: self.input_image})
+        self.infer_request = self.infer.start_async(request_id=0, inputs={self.input_name: self.input_image})
 
-        if self.infer.requests[0].wait(-1)==0:
-            get_output = self.infer.requests[0].outputs[self.output_name]
+        # if self.infer.requests[0].wait(-1)==0:
+        #     get_output = self.infer.requests[0].outputs[self.output_name]
+        #     crop_coords, face_output = self.preprocess_output(image, get_output)
+
+        if self.infer_request.wait() == 0:
+            get_output = self.infer_request.output_blobs[self.output_name]
             crop_coords, face_output = self.preprocess_output(image, get_output)
 
         return crop_coords, face_output
@@ -165,7 +170,7 @@ class FaceDetection:
         '''
         
         crop_coords = []
-        for bounding_box in outputs[0][0]:
+        for bounding_box in outputs.buffer[0][0]:
             if bounding_box[2] >= self.threshold:
                 xmin = int(bounding_box[3]*self.image_width)
                 ymin = int(bounding_box[4]*self.image_height)
